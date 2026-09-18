@@ -28,7 +28,8 @@ const (
 )
 
 type Store struct {
-	dir string
+	dir    string
+	logger *log.Logger
 }
 
 func New(dir string, logger *log.Logger) (*Store, error) {
@@ -36,7 +37,8 @@ func New(dir string, logger *log.Logger) (*Store, error) {
 		return nil, err
 	}
 	return &Store{
-		dir: dir,
+		dir:    dir,
+		logger: logger,
 	}, nil
 }
 
@@ -107,7 +109,7 @@ func (s *Store) Lookup(_ context.Context, short string) (string, error) {
 		return "", ErrNotFound
 	}
 	if err != nil {
-		fmt.Printf("failed to read %s: %v\n", shortcodeFilepath, err)
+		s.logger.Printf("failed to read %s: %v", shortcodeFilepath, err)
 		return "", err
 	}
 	return string(data), nil
